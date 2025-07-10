@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("email@gmail.com");
+  const [email, setEmail] = useState("nk@gmail.com");
   const [password, setPassword] = useState("pass");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -90,7 +90,7 @@ export default function LoginForm() {
         </form>
 
         <p className="mt-6 text-center text-xs text-gray-500">
-          Demo: <span className="text-blue-600">email@gmail.com</span> /{" "}
+          Demo: <span className="text-blue-600">nk@gmail.com</span> /{" "}
           <span className="text-blue-600">pass</span>
         </p>
 
@@ -100,6 +100,14 @@ export default function LoginForm() {
           className="w-full py-2 mt-2 cursor-pointer bg-gray-800 text-white rounded hover:bg-gray-900 transition"
         >
           Continue with GitHub
+        </button>
+
+        <button
+          type="button"
+          onClick={() => signIn("google")}
+          className="w-full py-2 mt-2 cursor-pointer bg-gray-800 text-white rounded hover:bg-gray-900 transition"
+        >
+          Continue with Google
         </button>
       </div>
     </main>

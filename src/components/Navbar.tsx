@@ -2,14 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // Redirect unauthenticated users
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -24,7 +22,6 @@ export default function Navbar() {
             NextAuthApp
           </h1>
 
-          {/* Show logout button only if session exists */}
           {status === "authenticated" && session?.user && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">

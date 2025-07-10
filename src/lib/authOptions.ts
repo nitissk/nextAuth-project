@@ -1,6 +1,7 @@
 // lib/authOptions.ts
 import type { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
@@ -13,10 +14,10 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (
-          credentials?.email === "email@gmail.com" &&
+          credentials?.email === "nk@gmail.com" &&
           credentials?.password === "pass"
         ) {
-          return { id: "1", name: "Demo User", email: "email@gmail.com" };
+          return { id: "1", name: "Nitish", email: "nk@gmail.com" };
         }
         return null;
       },
@@ -24,6 +25,10 @@ export const authOptions: NextAuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   session: {
