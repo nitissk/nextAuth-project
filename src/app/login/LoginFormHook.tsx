@@ -1,37 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+type FormData = {
+  email: string;
+  password: string;
+};
+
 export default function LoginForm() {
-  const [email, setEmail] = useState("nk@gmail.com");
-  const [password, setPassword] = useState("pass");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError: setFormError,
+  } = useForm<FormData>({
+    defaultValues: {
+      email: "nk@gmail.com",
+      password: "pass",
+    },
+  });
+
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
+  const onSubmit = async (data: FormData) => {
     try {
       const res = await signIn("credentials", {
-        email,
-        password,
+        email: data.email,
+        password: data.password,
         redirect: false,
       });
 
       if (res?.ok) {
         router.push("/");
       } else {
-        setError("Invalid email or password");
+        setFormError("root", {
+          type: "manual",
+          message: "Invalid email or password",
+        });
       }
-    } catch {
-      setError("An unexpected error occurred");
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      setFormError("root", {
+        type: "manual",
+        message: "An unexpected error occurred",
+      });
     }
   };
 
@@ -42,13 +55,17 @@ export default function LoginForm() {
           Sign In
         </h2>
 
-        {error && (
+        {errors.root && (
           <p className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded">
-            {error}
+            {errors.root.message}
           </p>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4"
+          noValidate
+        >
           <div>
             <label htmlFor="email" className="block text-sm text-gray-700 mb-1">
               Email
@@ -56,11 +73,20 @@ export default function LoginForm() {
             <input
               id="email"
               type="email"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
+                },
+              })}
               className="w-full p-2 border border-gray-300 rounded text-sm"
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
@@ -73,19 +99,28 @@ export default function LoginForm() {
             <input
               id="password"
               type="password"
-              value={password}
-              required
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 4,
+                  message: "Password must be at least 4 characters",
+                },
+              })}
               className="w-full p-2 border border-gray-300 rounded text-sm"
             />
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="w-full cursor-pointer p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-400"
           >
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
