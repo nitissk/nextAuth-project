@@ -40,3 +40,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
  <!--!  The [...nextauth] syntax is a catch-all route, meaning it handles requests to /api/auth/* (e.g., /api/auth/signin, /api/auth/signout).  -->
 
   <!--!  NextAuth.js creates a cookie named next-auth.session-token containing the JWT.  -->
+# CountryList---userList-NextAuth
